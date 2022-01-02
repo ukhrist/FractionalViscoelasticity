@@ -232,6 +232,8 @@ with torch.no_grad():
     plt.yscale("log")
     plt.xlabel("Iteration")
 
+    tikzplotlib.save(tikz_folder+"plt_convergence.tex", **tikz_settings)
+
     """
     ==================================================================================================================
     """

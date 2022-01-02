@@ -195,6 +195,23 @@ with torch.no_grad():
 
     tikzplotlib.save(tikz_folder+"plt_two_kernels_compare_kernels_dev.tex", **tikz_settings)
 
+    """
+    ==================================================================================================================
+    Figure 4: Convergence
+    ==================================================================================================================
+    """
+
+    loss = convergence["loss"]
+    grad = convergence["grad"]
+
+    plt.figure("Convergence", **figure_settings)
+    plt.plot(loss, label="Loss", **plot_settings)
+    plt.plot(grad, label="Gradient", **plot_settings)
+    plt.legend()
+    plt.yscale("log")
+    plt.xlabel("Iteration")
+
+    tikzplotlib.save(tikz_folder+"plt_two_kernels_convergence.tex", **tikz_settings)
 
     """
     ==================================================================================================================
