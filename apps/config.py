@@ -26,7 +26,7 @@ inputfolder  = "./workfolder/"
 outputfolder = "./workfolder/"
 
 ### Beam
-mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 60, 10, 5)
+mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 30, 5, 2)
 
 ### Sub domain for clamp at left end
 def DirichletBoundary(x, on_boundary):
@@ -56,7 +56,7 @@ config = {
     'mesh'              :   mesh,
     'DirichletBoundary' :   DirichletBoundary,
     'NeumannBoundary'   :   NeumannBoundary,
-    'loading'           :   [load_Bending, load_Extension], ###  load_Bending, [load_Bending, load_Extension]
+    'loading'           :   [load_Bending],#, load_Extension], ###  load_Bending, [load_Bending, load_Extension]
 
     'infmode'           :   True,
 
@@ -67,7 +67,7 @@ config = {
 
     ### Viscous term
     'viscosity'         :   True,
-    'two_kernels'       :   True,
+    'two_kernels'       :   False,
 
     ### Measurements
     'observer'          :   TipDisplacementObserver,

@@ -235,6 +235,7 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
         self.w_func = Function(self.V, name="axilary variable")
         self.H_func = Function(self.V, name="hisory term")
         self.p_func = Function(self.V, name="loading")
+        self.mode_func = Function(self.V, name="modes for energy")
 
         self.u = torch.zeros(self.u_func.vector().get_local().shape, requires_grad=True).double()
         self.v = torch.zeros_like(self.u, requires_grad=True)
@@ -249,6 +250,7 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
         self.observations   = []
         self.Energy_elastic = np.array([])
         self.Energy_kinetic = np.array([])
+        self.Energy_viscous = np.array([])
 
 
     def update_forces(self, time):
@@ -328,6 +330,15 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
             E_kin  = assemble(0.5*self.m(self.v_func, self.v_func))
             self.Energy_elastic = np.append(self.Energy_elastic, E_elas)
             self.Energy_kinetic = np.append(self.Energy_kinetic, E_kin)
+            
+            E_visc = 0
+            kernel = self.kernels[0]
+            for i in range(kernel.nModes):
+                mode = kernel.modes[:,i]
+                self.mode_func.vector()[:] = mode.detach().numpy()
+                E_visc += kernel.wk[i] * kernel.coef_bk[i] * assemble(0.5*self.c(self.mode_func, self.mode_func))
+
+            self.Energy_viscous = np.append(self.Energy_viscous, E_visc)
 
 
 
