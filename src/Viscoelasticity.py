@@ -252,6 +252,11 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
         self.Energy_kinetic = np.array([])
         self.Energy_viscous = np.array([])
 
+        nmodes = self.kernels[0].nModes
+        nsteps = self.time_steps.size
+        self.mode_abs = np.zeros((nsteps, nmodes))
+        self.sol_abs  = np.zeros(nsteps)
+
 
     def update_forces(self, time):
         if self.NeumannBC:
@@ -320,7 +325,7 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
     ==================================================================================================================
     """
 
-    def user_defined_routines(self, time=None):
+    def user_defined_routines(self, time=None, step_index=None):
 
         ### TODO: your code here
 
@@ -334,11 +339,18 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
             E_visc = 0
             kernel = self.kernels[0]
             for i in range(kernel.nModes):
+                
+                #tmp += sum(abs(kernel.modes[:,i]))
+                #self.tmp = np.append(self.tmp, sum(abs(kernel.modes[:,i])))
                 mode = kernel.modes[:,i]
                 self.mode_func.vector()[:] = mode.detach().numpy()
+                #Calculate integral of squared modes to show decay
+                self.mode_abs[step_index, i] = kernel.wk[i] * kernel.coef_bk[i] *assemble(inner(self.mode_func, self.mode_func)*dx)
                 E_visc += kernel.wk[i] * kernel.coef_bk[i] * assemble(0.5*self.c(self.mode_func, self.mode_func))
 
             self.Energy_viscous = np.append(self.Energy_viscous, E_visc)
+            #self.tmp = np.append(self.tmp, tmp)
+            self.sol_abs[step_index] = assemble(inner(self.u_func, self.u_func)*dx)
 
 
 
@@ -365,7 +377,7 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
             self.export_state(t)
 
             self.observe()
-            self.user_defined_routines(t)
+            self.user_defined_routines(t, i)
             
 
         self.observations = torch.stack(self.observations)

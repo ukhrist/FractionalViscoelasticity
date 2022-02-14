@@ -42,16 +42,23 @@ if config['two_kernels']:
 
 else:
     alpha = 0.7
-    RA = RationalApproximation(alpha=alpha)
+    RA = RationalApproximation(alpha=alpha, tol=1.e-4)
     parameters = list(RA.c) + list(RA.d)
     if infmode==True: parameters.append(RA.c_inf)
     kernel  = SumOfExponentialsKernel(parameters=parameters)
     kernels = [kernel]
 
+print(f"Number of modes: {kernel.nModes}")
+print("Coefficients of all modes:")
+kernel.compute_coefficients(config["FinalTime"]/config["nTimeSteps"])
+for i in range(kernel.nModes):
+    print(f" - Mode {i}: {kernel.wk[i] * kernel.coef_bk[i]}")
 
-
-
-
+magnitude = 1.
+tmax = 4/5
+tzero = 1.
+load_Bending = Expression(("0", "t <= tm ? p0*t/tm : (t <= tz ? p0*(1 - (t-tm)/(tz-tm)) : 0)", "0"), t=0, tm=tmax, tz=tzero, p0=magnitude, degree=0)
+config["loading"] = [load_Bending]
 """
 ==================================================================================================================
 Forward problem for generating data
@@ -116,6 +123,21 @@ with torch.no_grad():
         plt.grid(True, which='both')
         plt.legend()
 
+    plt.show()
+
+    plt.subplot(1,2,1)
+    plt.title('Tip displacement')
+    plt.plot(Model.time_steps, data)
+
+    labels = [f"Mode {i}" for i in range(Model.kernels[0].nModes)]
+    labels.append("Solution")
+
+    plt.subplot(1,2,2)
+    plt.title('Norm of modes')
+    plt.plot(Model.time_steps, np.sqrt(Model.mode_abs), "-")
+    plt.plot(Model.time_steps, Model.sol_abs, c="k")
+    plt.grid(True, which="both")
+    plt.legend(labels)
     plt.show()
 
     # model.kernel.plot()

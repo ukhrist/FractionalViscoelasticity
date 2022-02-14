@@ -26,7 +26,7 @@ inputfolder  = "./workfolder/"
 outputfolder = "./workfolder/"
 
 ### Beam
-mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 30, 5, 2)
+mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 20, 4, 2)
 
 ### Sub domain for clamp at left end
 def DirichletBoundary(x, on_boundary):
@@ -51,7 +51,7 @@ config = {
     'export_vtk'        :   False,
 
     'FinalTime'         :   4,
-    'nTimeSteps'        :   100,
+    'nTimeSteps'        :   500,
 
     'mesh'              :   mesh,
     'DirichletBoundary' :   DirichletBoundary,
