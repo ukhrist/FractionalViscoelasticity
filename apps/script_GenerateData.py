@@ -66,11 +66,6 @@ kernel.compute_coefficients(config["FinalTime"]/config["nTimeSteps"])
 for i in range(kernel.nModes):
     print(f" - Mode {i}: {kernel.wk[i] * kernel.coef_bk[i]}")
 
-magnitude = 1.
-tmax = 4/5
-tzero = 1.
-load_Bending = Expression(("0", "t <= tm ? p0*t/tm : (t <= tz ? p0*(1 - (t-tm)/(tz-tm)) : 0)", "0"), t=0, tm=tmax, tz=tzero, p0=magnitude, degree=0)
-config["loading"] = [load_Bending]
 """
 ==================================================================================================================
 Forward problem for generating data
@@ -146,8 +141,9 @@ with torch.no_grad():
 
     plt.subplot(1,2,2)
     plt.title('Norm of modes')
-    plt.plot(Model.time_steps, np.sqrt(Model.mode_abs), "-")
-    plt.plot(Model.time_steps, Model.sol_abs, c="k")
+    plt.plot(Model.time_steps, np.sqrt(Model.mode_norm), "-")
+    plt.plot(Model.time_steps, Model.displacement_norm, c="k", linestyle="--")
+    plt.plot(Model.time_steps, Model.velocity_norm, c="k", linestyle=":")
     plt.grid(True, which="both")
     plt.legend(labels)
     plt.show()

@@ -51,5 +51,6 @@ def pick_model_data(model):
     yield model.Energy_elastic
     yield model.Energy_kinetic
     yield model.Energy_viscous
-    yield model.mode_abs
-    yield model.sol_abs
+    yield model.mode_norm
+    yield model.displacement_norm
+    yield model.velocity_norm

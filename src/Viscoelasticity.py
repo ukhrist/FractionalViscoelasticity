@@ -254,8 +254,9 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
 
         nmodes = self.kernels[0].nModes
         nsteps = self.time_steps.size
-        self.mode_abs = np.zeros((nsteps, nmodes))
-        self.sol_abs  = np.zeros(nsteps)
+        self.mode_norm          = np.zeros((nsteps, nmodes))
+        self.displacement_norm  = np.zeros(nsteps)
+        self.velocity_norm      = np.zeros(nsteps)
 
 
     def update_forces(self, time):
@@ -345,12 +346,13 @@ class ViscoelasticityProblem(torch_fenics.FEniCSModule):
                 mode = kernel.modes[:,i]
                 self.mode_func.vector()[:] = mode.detach().numpy()
                 #Calculate integral of squared modes to show decay
-                self.mode_abs[step_index, i] = kernel.wk[i] * kernel.coef_bk[i] *assemble(inner(self.mode_func, self.mode_func)*dx)
+                self.mode_norm[step_index, i] = kernel.wk[i] * kernel.coef_bk[i] *assemble(inner(self.mode_func, self.mode_func)*dx)
                 E_visc += kernel.wk[i] * kernel.coef_bk[i] * assemble(0.5*self.c(self.mode_func, self.mode_func))
 
             self.Energy_viscous = np.append(self.Energy_viscous, E_visc)
             #self.tmp = np.append(self.tmp, tmp)
-            self.sol_abs[step_index] = assemble(inner(self.u_func, self.u_func)*dx)
+            self.displacement_norm[step_index] = assemble(inner(self.u_func, self.u_func)*dx)
+            self.velocity_norm[step_index] = assemble(inner(self.v_func, self.v_func)*dx)
 
 
 
