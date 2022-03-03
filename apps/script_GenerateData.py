@@ -7,6 +7,7 @@ from config import *
 fg_export = True  ### write results on the disk (True) or only solve (False)
 config['export_vtk'] = True
 
+zener_kernel = False
 
 """
 ==================================================================================================================
@@ -41,12 +42,23 @@ if config['two_kernels']:
     parameters = [parameters1, parameters2]
 
 else:
-    alpha = 0.7
-    RA = RationalApproximation(alpha=alpha, tol=1.e-4)
-    parameters = list(RA.c) + list(RA.d)
-    if infmode==True: parameters.append(RA.c_inf)
-    kernel  = SumOfExponentialsKernel(parameters=parameters)
-    kernels = [kernel]
+    if zener_kernel:
+        alpha = 0.5
+        tau_eps = .2
+        tau_sig = .1
+        TargetFunction = lambda x: (tau_eps/tau_sig - 1) * x**(1-alpha)/(x**-alpha + 1/tau_sig)
+        RA = RationalApproximation(alpha=alpha, TargetFunction=TargetFunction, tol=1.e-5)
+        parameters = list(RA.c) + list(RA.d)
+        if infmode==True: parameters.append(RA.c_inf)
+        kernel  = SumOfExponentialsKernel(parameters=parameters)
+        kernels = [kernel]
+    else:
+        alpha = 0.7
+        RA = RationalApproximation(alpha=alpha, tol=1.e-4)
+        parameters = list(RA.c) + list(RA.d)
+        if infmode==True: parameters.append(RA.c_inf)
+        kernel  = SumOfExponentialsKernel(parameters=parameters)
+        kernels = [kernel]
 
 print(f"Number of modes: {kernel.nModes}")
 print("Coefficients of all modes:")
