@@ -91,7 +91,7 @@ correct.kernels[0].F_old = copy.deepcopy(IC.kernels[0].F_old)
 
 correct.u = copy.deepcopy(IC.u)
 correct.v = copy.deepcopy(IC.v)
-correct.a = copy.deepcopy(IC.a)
+#correct.a = copy.deepcopy(IC.a)
 
 correct.forward_solve(loading=config.get("loading"))
 
@@ -117,7 +117,7 @@ wrong.kernels[0].F_old = 0
 
 wrong.u = copy.deepcopy(IC.u)
 wrong.v = copy.deepcopy(IC.v)
-wrong.a = copy.deepcopy(IC.a)
+#wrong.a = copy.deepcopy(IC.a)
 
 wrong.forward_solve(loading=config.get("loading"))
 
