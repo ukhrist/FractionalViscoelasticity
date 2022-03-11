@@ -8,6 +8,7 @@ from datetime import datetime
 # smaller mesh for faster execution
 mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 20, 4, 2)
 config['mesh'] = mesh
+config['inverse'] = True
 
 # continuous loading
 magnitude = 1.
@@ -36,7 +37,7 @@ path = config['outputfolder']
 path = path+f"convergence/alpha{alpha}/"
 config['viscosity'] = True
 
-u, v, a, modes, F_old = load_data(path+f"initialcondition")
+u, v, a, history, modes, F_old = load_data(path+f"initialcondition")
 
 n_steps_list = 2**np.arange(0, maxindex)*1e2
 n_steps_list = np.append(n_steps_list, n_steps_list[-1]*10)
@@ -51,8 +52,11 @@ Model = ViscoelasticityProblem(**config, kernels=kernels)
 # set initial condition
 Model.kernels[0].modes = modes
 Model.kernels[0].F_old = F_old
+
+# uncomment the following three lines to zero the modes for incorrect initial condition
 #Model.kernels[0].modes = 0
-#Model.kernels[0].F_old = 0
+#Model.kernels[0].F_old = 0 
+#Model.history = history
 
 Model.u = u
 Model.v = v

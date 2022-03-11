@@ -50,5 +50,6 @@ def pick_model_data(model):
     yield model.u
     yield model.v
     yield model.a
+    yield model.history
     yield model.kernels[0].modes
     yield model.kernels[0].F_old

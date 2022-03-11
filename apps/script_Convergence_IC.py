@@ -36,7 +36,7 @@ os.makedirs(path, exist_ok=True)
 
 config['viscosity']  = True
 config['FinalTime']  = 1
-config['nTimeSteps'] = 8000
+config['nTimeSteps'] = 1000
 
 print()
 print(f"Computing initial condition started")
