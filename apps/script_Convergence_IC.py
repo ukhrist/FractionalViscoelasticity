@@ -17,6 +17,10 @@ loading = Expression(("0", "t <= tm ? p0*t/tm : (t <= tz ? p0*(1 - (t-tm)/(tz-tm
 
 # get input values
 alpha = float(sys.argv[1])
+if sys.argv[2] in ['True', '1', '1.']:
+    correct = True
+else:
+    correct = False
 
 timestring = datetime.strftime(datetime.now(), "%Y%m%d%H%M")
 
@@ -31,7 +35,12 @@ kernel  = SumOfExponentialsKernel(parameters=parameters)
 kernels = [kernel]
 
 path = config['outputfolder']
-path = path+f"convergence/alpha{alpha}/"
+path = path+f"convergence/"
+if correct:
+    path += "correctIC/"
+else:
+    path += "wrongIC/"
+path = path+f"alpha{alpha}/"
 os.makedirs(path, exist_ok=True)
 
 config['viscosity']  = True

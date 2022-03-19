@@ -20,6 +20,10 @@ loading = Expression(("0", "0", "0"), degree=0)
 alpha = float(sys.argv[1])
 index = int(sys.argv[2])
 maxindex = int(sys.argv[3])
+if sys.argv[2] in ['True', '1', '1.']:
+    correct = True
+else:
+    correct = False
 
 timestring = datetime.strftime(datetime.now(), "%Y%m%d%H%M")
 
@@ -34,7 +38,12 @@ kernel  = SumOfExponentialsKernel(parameters=parameters)
 kernels = [kernel]
 
 path = config['outputfolder']
-path = path+f"convergence/alpha{alpha}/"
+path = path+f"convergence/"
+if correct:
+    path += "correctIC/"
+else:
+    path += "wrongIC/"
+path = path+f"alpha{alpha}/"
 config['viscosity'] = True
 
 u, v, a, history, modes, F_old = load_data(path+f"initialcondition")
@@ -53,10 +62,10 @@ Model = ViscoelasticityProblem(**config, kernels=kernels)
 Model.kernels[0].modes = modes
 Model.kernels[0].F_old = F_old
 
-# uncomment the following three lines to zero the modes for incorrect initial condition
-#Model.kernels[0].modes = 0
-#Model.kernels[0].F_old = 0 
-#Model.history = history
+if not correct:
+    Model.kernels[0].modes = 0
+    Model.kernels[0].F_old = 0 
+    Model.history = history
 
 Model.u = u
 Model.v = v

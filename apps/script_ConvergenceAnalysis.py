@@ -16,11 +16,15 @@ legend_settings = {'loc' : 'center left', 'bbox_to_anchor' : (1.1, 0.5)}
 tikz_settings = {'axis_width' : '\\textwidth'}
 
 alpha = 0.5
+correct = True
 
 dir = config['outputfolder']
 dir_plot = dir + "convergence/plots/"
 tikz_folder = dir_plot
-dir += f"convergence/alpha{alpha}/"
+if correct:
+    dir += f"convergence/correctIC/alpha{alpha}/"
+else:
+    dir += f"convergence/wrongIC/alpha{alpha}/"
 
 sol = []
 nsteps  = []
@@ -55,8 +59,8 @@ plt.plot(t[::plotskip], reference[::plotskip], **plot_settings)
 plt.xlabel("Time [s]")
 plt.ylabel("Tip displacement [arb. unit]")
 plt.title(f"Alpha= {alpha}")
-plt.savefig(dir_plot+f"Solution_{alpha}.pdf", bbox_inches="tight")
-tikzplotlib.save(dir_plot+f"plt_convergence_solution_{alpha}.tex", **tikz_settings)
+plt.savefig(dir_plot+f"Solution_{alpha}_{'correct' if correct else 'wrong'}.pdf", bbox_inches="tight")
+tikzplotlib.save(dir_plot+f"plt_convergence_solution_{alpha}_{'correct' if correct else 'wrong'}.tex", **tikz_settings)
 plt.show()
 
 #error1 = []
@@ -108,8 +112,8 @@ plt.xlabel("$dt$")
 plt.ylabel("$\mathcal{E}_{tip}(dt)$")
 plt.title(f"Alpha= {alpha}")
 plt.legend()
-plt.savefig(dir_plot+f"Convergence_{alpha}.pdf", bbox_inches="tight")
-tikzplotlib.save(dir_plot+f"plt_convergence_{alpha}.tex", **tikz_settings)
+plt.savefig(dir_plot+f"Convergence_{alpha}_{'correct' if correct else 'wrong'}.pdf", bbox_inches="tight")
+tikzplotlib.save(dir_plot+f"plt_convergence_{alpha}_{'correct' if correct else 'wrong'}.tex", **tikz_settings)
 plt.show()
 
 print("All plots created.")
