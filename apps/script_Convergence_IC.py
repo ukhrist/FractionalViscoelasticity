@@ -52,6 +52,7 @@ print(f"Computing initial condition started")
 print()
 
 Model = ViscoelasticityProblem(**config, kernels=kernels)
+Model.flags['inverse']    = True
 Model.forward_solve(loading=loading)
 obs = Model.observations
 data = obs.numpy()

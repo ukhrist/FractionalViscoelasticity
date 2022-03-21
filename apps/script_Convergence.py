@@ -8,7 +8,6 @@ from datetime import datetime
 # smaller mesh for faster execution
 mesh = BoxMesh(Point(0., 0., 0.), Point(1., 0.1, 0.04), 20, 4, 2)
 config['mesh'] = mesh
-config['inverse'] = True
 
 # continuous loading
 magnitude = 1.
@@ -20,7 +19,7 @@ loading = Expression(("0", "0", "0"), degree=0)
 alpha = float(sys.argv[1])
 index = int(sys.argv[2])
 maxindex = int(sys.argv[3])
-if sys.argv[2] in ['True', '1', '1.']:
+if sys.argv[4] in ['True', '1', '1.']:
     correct = True
 else:
     correct = False
@@ -57,6 +56,7 @@ config['FinalTime']  = 4
 print(f"START: dt={1/n_steps} started")
 
 Model = ViscoelasticityProblem(**config, kernels=kernels)
+Model.flags['inverse']    = True
 
 # set initial condition
 Model.kernels[0].modes = modes
