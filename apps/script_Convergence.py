@@ -62,10 +62,11 @@ Model.flags['inverse']    = True
 Model.kernels[0].modes = modes
 Model.kernels[0].F_old = F_old
 
-if not correct:
+if correct:
+    Model.history = history
+else:
     Model.kernels[0].modes = 0
     Model.kernels[0].F_old = 0 
-    Model.history = history
 
 Model.u = u
 Model.v = v

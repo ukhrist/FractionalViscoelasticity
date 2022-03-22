@@ -17,7 +17,8 @@ loading = Expression(("0", "t <= tm ? p0*t/tm : (t <= tz ? p0*(1 - (t-tm)/(tz-tm
 
 # get input values
 alpha = float(sys.argv[1])
-if sys.argv[2] in ['True', '1', '1.']:
+maxindex = int(sys.argv[2])
+if sys.argv[3] in ['True', '1', '1.']:
     correct = True
 else:
     correct = False
@@ -45,7 +46,7 @@ os.makedirs(path, exist_ok=True)
 
 config['viscosity']  = True
 config['FinalTime']  = 1
-config['nTimeSteps'] = 1000
+config['nTimeSteps'] = 1000#2**(maxindex-1)*10**3
 
 print()
 print(f"Computing initial condition started")

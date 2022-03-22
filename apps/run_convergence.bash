@@ -5,7 +5,7 @@ read -p "Maxindex (1000*2^i): " maxindex
 read -p "Correct IC: " correct
 export PYTHONPATH=.
 
-python apps/script_Convergence_IC.py $alpha $correct
+python apps/script_Convergence_IC.py $alpha $maxindex $correct
 
 for ((i = 0 ; i <= $maxindex; i++)); do
     echo "Running n =" $i
