@@ -20,7 +20,7 @@ correct = False
 
 config['FinalTime']  = 4
 
-for alpha in [0., 0.5, 0.75, 1.]:
+for alpha in [0., 0.25, 0.5, 0.75, 1.]:
 
     print("#"*80)
     print(f"Alpha = {alpha}")
@@ -32,9 +32,6 @@ for alpha in [0., 0.5, 0.75, 1.]:
         dir += f"convergence/correctIC/alpha{alpha}/"
     else:
         dir += f"convergence/wrongIC/alpha{alpha}/"
-
-    sol = []
-    nsteps  = []
 
     data = {}
     numsteps = []
